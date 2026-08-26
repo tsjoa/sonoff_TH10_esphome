@@ -29,7 +29,7 @@ The Sonoff TH10 is an ESP8266-based smart relay that includes a 2.5mm TRRS jack 
 
 ## PCB Pinout & Serial Header
 
-Inside the Sonoff TH10 case, you will find a 4-pin or 5-pin header footprint on the PCB adjacent to the ESP8266 and the push button.
+Inside the Sonoff TH10 case, you will find a 4-pin header footprint on the PCB adjacent to the ESP8266 and the push button.
 
 | PCB Front Overview | PCB Rear |
 | :---: | :---: |
