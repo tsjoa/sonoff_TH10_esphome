@@ -1,0 +1,88 @@
+esphome:
+  name: sonoff-th10
+  friendly_name: "Sonoff TH10"
+
+esp8266:
+  board: esp01_1m
+
+logger:
+  baud_rate: 0  # Disable UART logging to prevent interference
+  level: DEBUG
+
+time:
+  - platform: sntp
+    id: sntp_time
+    timezone: "Australia/Perth"
+
+api:
+  encryption:
+    key: !secret api_encryption_key
+  reboot_timeout: 0s  # Prevent auto-reboot when HA is disconnected
+
+ota:
+  - platform: esphome
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  power_save_mode: none
+  fast_connect: true
+  reboot_timeout: 15min
+
+  ap:
+    ssid: "Sonoff-TH10 Fallback Hotspot"
+    password: "th10_fallback_setup"
+
+captive_portal:
+
+# Status LED (Blue)
+status_led:
+  pin:
+    number: GPIO13
+    inverted: true
+
+# Physical Hardware Button
+binary_sensor:
+  - platform: gpio
+    pin:
+      number: GPIO0
+      mode: INPUT_PULLUP
+      inverted: true
+    name: "Hardware Button"
+    on_press:
+      - switch.toggle: relay_output
+
+# Main Relay
+switch:
+  - platform: gpio
+    name: "Relay"
+    id: relay_output
+    pin: GPIO12
+    restore_mode: RESTORE_DEFAULT_OFF
+    icon: "mdi:power-socket-au"
+
+# Temperature / Humidity Sensor (2.5mm jack / GPIO14)
+# Configured for standard Si7021 / AM2301 sensor
+sensor:
+  - platform: dht
+    pin: GPIO14
+    model: SI7021
+    temperature:
+      name: "Temperature"
+    humidity:
+      name: "Humidity"
+    update_interval: 30s
+
+  - platform: wifi_signal
+    name: "Wi-Fi Signal Strength"
+    update_interval: 60s
+
+  - platform: uptime
+    name: "Controller Uptime"
+    update_interval: 60s
+
+button:
+  - platform: restart
+    name: "Restart Controller"
+    id: controller_restart
+    icon: "mdi:restart"
